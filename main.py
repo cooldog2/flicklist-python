@@ -15,7 +15,6 @@ terrible_movies = [
     "Nine Lives"
 ]
 
-
 def getCurrentWatchlist():
     """ Returns the user's current watchlist """
 
@@ -42,7 +41,10 @@ class AddMovie(webapp2.RequestHandler):
         new_movie = self.request.get("new-movie")
 
         # if the user typed nothing at all, redirect and yell at them
-        if (not new_movie) or (new_movie.strip() == ""):
+        if (not new_mov
+
+
+        ';90-e) or (new_movie.strip() == ""):
             error = "Please specify the movie you want to add."
             self.redirect("/?error=" + cgi.escape(error))
 
@@ -57,7 +59,10 @@ class AddMovie(webapp2.RequestHandler):
         # TODO 1
         # Use a template to render the confirmation message
 
-        self.response.write("Under construction...")
+        t = jinja_env.get_template("add-movie.html")
+        content = t.render(new_movie=new_movie)
+        self.response.write(content)
+        # self.response.write("Under construction...")
 
 
 class CrossOffMovie(webapp2.RequestHandler):
