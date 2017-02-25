@@ -15,6 +15,8 @@ terrible_movies = [
     "Nine Lives"
 ]
 
+# MY TODO add rating values for watched movies -
+ratings = [1, 2, 3, 4]
 
 def getUnwatchedMovies():
     """ Returns the list of movies the user wants to watch (but hasnt yet) """
@@ -56,7 +58,7 @@ class AddMovie(webapp2.RequestHandler):
 
         # if the user wants to add a terrible movie, redirect and yell at them
         if new_movie in terrible_movies:
-            error = "Trust me, you don't want to add '{0}' to your Watchlist.".format(new_movie)
+            error = "Trust me, you don't want to add '{0}   ' to your Watchlist.".format(new_movie)
             self.redirect("/?error=" + cgi.escape(error, quote=True))
 
         # 'escape' the user's input so that if they typed HTML, it doesn't mess up our site
@@ -67,7 +69,6 @@ class AddMovie(webapp2.RequestHandler):
         content = t.render(movie = new_movie_escaped)
         self.response.write(content)
 
-
 class WatchedMovie(webapp2.RequestHandler):
     """ Handles requests coming in to '/watched-it'
         e.g. www.flicklist.com/watched-it
@@ -76,7 +77,6 @@ class WatchedMovie(webapp2.RequestHandler):
     def renderError(self, error_code):
         self.error(error_code)
         self.response.write("Oops! Something went wrong.")
-
 
     def post(self):
         watched_movie = self.request.get("watched-movie")
@@ -109,14 +109,17 @@ class MovieRatings(webapp2.RequestHandler):
     # implement a post method inside this class
     # it should render the rating-confirmation.html template
 
-
+    def post(self):
+        t = jinja_env.get_template("rating-confirmation.html")
+        # movie_rating = self.request.get("rating")
+        # movie = self.request.get("movie")
+        content = t.render(movie = self.request.get('movie'), rating = self.request.get('rating'))
+        self.response.write(content)
 
 # TODO 1
 # Make a template called rating-confirmation.html
 # It should show a confirmation message like:
 #    "You gave Lord of the Rings a rating of ****"
-
-
 
 app = webapp2.WSGIApplication([
     ('/', Index),
