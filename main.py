@@ -15,14 +15,12 @@ terrible_movies = [
     "Paul Blart: Mall Cop 2",
     "Nine Lives"
 ]
-
-
+# Create movie model objet (database)
 class Movie(db.Model):
     title = db.StringProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
     watched = db.BooleanProperty(required = True, default = False)
     rating = db.StringProperty()
-
 
 def getUnwatchedMovies():
     """ Returns the list of movies the user wants to watch (but hasnt yet) """
@@ -127,7 +125,8 @@ class MovieRatings(Handler):
     def get(self):
         # TODO 1
         # Make a GQL query for all the movies that have been watched
-        watched_movies = [] # type something else instead of an empty list
+        # watched_movies = [] # type something else instead of an empty list
+        watched_movies = db.GqlQuery("SELECT * FROM Movie where watched = True ORDER BY created")
 
         # TODO (extra credit)
         # in the query above, add something so that the movies are sorted by creation date, most recent first
@@ -142,12 +141,13 @@ class MovieRatings(Handler):
 
         # TODO 2
         # retreive the movie entity whose id is movie_id
-        movie = None # type something else instead of None
+        movie = Movie.get_by_id( int(movie_id)) # type something else instead of None
 
         if movie and rating:
             # TODO 3
             # update the movie's rating property and save it to the database
-
+            movie.rating = rating
+            movie.put()
 
             # render confirmation
             t = jinja_env.get_template("rating-confirmation.html")
